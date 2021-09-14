@@ -9,8 +9,6 @@ const multer = require('multer')
 const {GridFsStorage}  = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 
-const fileanalyse = require("./api/fileanalyse");
-
 // create a connection using mongoose
 let conn = mongoose.connection;
 let gfs;
@@ -38,7 +36,43 @@ app.get('/', function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.use("/api/fileanalyse", fileanalyse);
+// upload a file
+app.post("/api/fileanalyse",upload.single("upfile"),(req,res)=>{
+  res.json({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size
+  })
+})
+
+// get list of files
+app.get('/api/fileanalyse', (req, res) => {
+    gfs.files.find().toArray((error, files) => {
+        //check if files exist
+        if (!files || files.length == 0) {
+            return res.status(404).json({
+                error: "No files exist"
+            })
+        }
+        // files exist
+        return res.json(files)
+    })
+})
+
+// get a single image
+app.get('/api/fileanalyse/:filename', (req, res) => {
+    gfs.files.findOne({ filename: req.params.filename }, (error, file) => {
+        //check if files exist
+        if (!file || file.length == 0) {
+            return res.status(404).json({
+                error: "No files exist"
+            })
+        }
+        //file exist
+        return res.json(file)
+    })
+})
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
