@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config()
 
 const mongoose = require("mongoose");
 const url = process.env.MONGO_URI;
-const { Schema } = mongoose;
 const multer = require('multer')
 const {GridFsStorage}  = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
@@ -30,10 +30,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-app.use('/public', express.static(process.cwd() + '/public'));
+app.use('/public', express.static(path.join(__dirname + '/public'));
 
 app.get('/', function (req, res) {
-    res.sendFile(process.cwd() + '/views/index.html');
+    res.sendFile(path.join(__dirname  + '/views/index.html');
 });
 
 // upload a file
