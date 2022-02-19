@@ -30,10 +30,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-app.use('/public', express.static(path.join(__dirname + '/public'));
+app.use('/public', express.static(path.join(__dirname + '/public')));
+
+const swaggerUi = require('swagger-ui-express');
+swaggerDocument = require('./swagger.json');
+
+app.use(
+    '/api-docs',
+    swaggerUi.serve, 
+    swaggerUi.setup(swaggerDocument)
+  );
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname  + '/views/index.html');
+    res.sendFile(path.join(__dirname  + '/views/index.html'));
 });
 
 // upload a file
